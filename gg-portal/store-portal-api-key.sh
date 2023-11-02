@@ -9,7 +9,7 @@
 ############################################### Variables ###############################################
 
 # ExtAuth config-id. Needs to match the APIKey ExtAuthPolicy configured on the APIProduct routetables.
-export EXT_AUTH_CONFIG_ID="gloo-mesh.api-key-auth-default-gg-demo-single-ext-auth-service"
+export DEFAULT_EXT_AUTH_CONFIG_ID="gloo-mesh.api-key-auth-default-gg-demo-single-ext-auth-service"
 
 ##########################################################################################################
 
@@ -22,10 +22,11 @@ function usage {
       echo "	-p		Usage-Plan for this key."
       echo "	-n		Name of the API-Key."
       echo "	-k		The API-Key to store."
+      echo "	-e 		Ext Auth configuration to which to link the API Key. (optional)"
 }
 
 #Parse the params
-while getopts ":u:p:n:k:h" opt; do
+while getopts ":u:p:n:k:e:h" opt; do
   case $opt in
     u)
       USERNAME=$OPTARG
@@ -38,6 +39,9 @@ while getopts ":u:p:n:k:h" opt; do
       ;;
     k)
       API_KEY=$OPTARG
+      ;;
+    e) 
+      EXT_AUTH_CONFIG_ID=$OPTARG
       ;;
     h)
       usage
@@ -79,6 +83,10 @@ if [ -z "$API_KEY" ]
 then
 	echo "No api-key specified!"
 	PARAMS_NOT_OK=true
+fi
+if [ -z "EXT_AUTH_CONFIG_ID" ]
+then
+	EXT_AUTH_CONFIG_ID=$DEFAULT_EXT_AUTH_CONFIG_ID
 fi
 
 if $PARAMS_NOT_OK
